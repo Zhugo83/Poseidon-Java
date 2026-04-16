@@ -18,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 
 @Controller
 public class CurveController {
+    // DONE: Inject Curve Point service
 
     private static final Logger logger = LogManager.getLogger(CurveController.class);
 
@@ -27,6 +28,7 @@ public class CurveController {
     @RequestMapping("/curvePoint/list")
     public String home(Model model)
     {
+        // DONE: find all Curve Point, add to model
         logger.info("/curvePoint/list");
         model.addAttribute("curvePoint", curvePointRepository.findAll());
         return "curvePoint/list";
@@ -40,6 +42,7 @@ public class CurveController {
 
     @PostMapping("/curvePoint/validate")
     public String validate(@Valid CurvePoint curvePoint, BindingResult result, Model model) {
+        // DONE: check data valid and save to db, after saving return Curve list
         logger.info("/curvePoint/validate");
         if (result.hasErrors()) {
             logger.error("/curvePoint/validate");
@@ -52,6 +55,7 @@ public class CurveController {
 
     @GetMapping("/curvePoint/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
+        // DONE: get CurvePoint by Id and to model then show to the form
         logger.info("/curvePoint/update/{}", id);
         CurvePoint curvePoint = curvePointRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid id:" + id));
         model.addAttribute("curvePoint", curvePoint);
@@ -61,6 +65,7 @@ public class CurveController {
     @PostMapping("/curvePoint/update/{id}")
     public String updateBid(@PathVariable("id") Integer id, @Valid CurvePoint curvePoint,
                              BindingResult result, Model model) {
+        // DONE: check required fields, if valid call service to update Curve and return Curve list
         logger.info("/curvePoint/update/{}", id);
         if (result.hasErrors()) {
             logger.error("/curvePoint/update/{}", id);
@@ -75,6 +80,7 @@ public class CurveController {
 
     @GetMapping("/curvePoint/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
+        // DONE: Find Curve by Id and delete the Curve, return to Curve list
         logger.error("/curvePoint/delete/{}", id);
         CurvePoint curvePoint = curvePointRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         curvePointRepository.delete(curvePoint);

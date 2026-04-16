@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "trade")
 public class Trade {
-    // TODO: Map columns in data table TRADE with corresponding java fields
+    // DONE: Map columns in data table TRADE with corresponding java fields
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     Integer tradeId;

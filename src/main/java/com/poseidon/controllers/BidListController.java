@@ -16,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 
 @Controller
 public class BidListController {
+    // DONE: Inject Bid service
 
     private static final Logger logger = LogManager.getLogger(BidListController.class);
 
@@ -25,6 +26,7 @@ public class BidListController {
     @RequestMapping("/bidList/list")
     public String home(Model model)
     {
+        // DONE: call service find all bids to show to the view
         logger.info("/bidList/list");
         model.addAttribute("bidList", bidListRepository.findAll());
         return "bidList/list";
@@ -38,6 +40,7 @@ public class BidListController {
 
     @PostMapping("/bidList/validate")
     public String validate(@Valid BidList bid, BindingResult result, Model model) {
+        // DONE: check data valid and save to db, after saving return bid list
         logger.info("/bidList/validate");
         if (result.hasErrors()) {
             logger.error("/bidList/validate");
@@ -50,6 +53,7 @@ public class BidListController {
 
     @GetMapping("/bidList/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
+        // DONE: get Bid by Id and to model then show to the form
         logger.info("/bidList/update/{}", id);
         BidList bidList = bidListRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         model.addAttribute("bidList", bidList);
@@ -59,6 +63,7 @@ public class BidListController {
     @PostMapping("/bidList/update/{id}")
     public String updateBid(@PathVariable("id") Integer id, @Valid BidList bidList,
                              BindingResult result, Model model) {
+        // DONE: check required fields, if valid call service to update Bid and return list Bid
         logger.info("/bidList/update/{}", id);
         if (result.hasErrors()) {
             logger.error("/bidList/update/{}", id);
@@ -72,6 +77,7 @@ public class BidListController {
 
     @GetMapping("/bidList/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
+        // DONE: Find Bid by Id and delete the bid, return to Bid list
         logger.info("/bidList/delete/{}", id);
         BidList bidList = bidListRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         bidListRepository.delete(bidList);
