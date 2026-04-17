@@ -45,7 +45,6 @@ public class CurveController {
         // DONE: check data valid and save to db, after saving return Curve list
         logger.info("/curvePoint/validate");
         if (result.hasErrors()) {
-            logger.error("/curvePoint/validate");
             curvePointRepository.save(curvePoint);
             model.addAttribute("curvePoint", curvePointRepository.findAll());
             return "redirect:curvePoint/list";
@@ -68,8 +67,6 @@ public class CurveController {
         // DONE: check required fields, if valid call service to update Curve and return Curve list
         logger.info("/curvePoint/update/{}", id);
         if (result.hasErrors()) {
-            logger.error("/curvePoint/update/{}", id);
-
             return "curvePoint/add";
         }
         curvePoint.setId(id);

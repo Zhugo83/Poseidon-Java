@@ -2,6 +2,7 @@ package com.poseidon.controllers;
 
 import com.poseidon.domain.Rating;
 import com.poseidon.repositories.RatingRepository;
+import com.poseidon.services.RatingService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,15 +23,17 @@ public class RatingController {
 
     private static final Logger logger = LogManager.getLogger(RatingController.class);
 
-    @Autowired
-    private RatingRepository ratingRepository;
+    private final RatingService ratingService;
+
+    public RatingController(RatingService ratingService) {
+        this.ratingService = ratingService;
+    }
 
     @RequestMapping("/rating/list")
     public String home(Model model)
     {
-        // DONE: find all Rating, add to model
-        model.addAttribute("rating", ratingRepository.findAll());
-        return "rating/list";
+        model.addAttribute("ratings", ratingService.findAll());
+        return  "rating/list";
     }
 
     @GetMapping("/rating/add")
@@ -45,8 +48,8 @@ public class RatingController {
         logger.info("/rating/validate");
         if (result.hasErrors()) {
             logger.error("/rating/validate");
-            ratingRepository.save(rating);
-            model.addAttribute("rating", ratingRepository.findAll());
+            ratingService.save(rating);
+            model.addAttribute("rating", ratingService.findAll());
             return "redirect:rating/list";
         }
         return "rating/add";
@@ -56,7 +59,7 @@ public class RatingController {
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         // DONE: get Rating by Id and to model then show to the form
         logger.info("/rating/update/ {}", id);
-        Rating rating = ratingRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid id:" + id));
+        Rating rating = ratingService.findById(id);
         model.addAttribute("rating", rating);
         return "rating/update";
     }
@@ -71,7 +74,7 @@ public class RatingController {
             return "rating/update";
         }
         rating.setId(id);
-        ratingRepository.save(rating);
+        ratingService.save(rating);
         model.addAttribute("rating", rating);
         return "redirect:/rating/list";
     }
@@ -80,9 +83,9 @@ public class RatingController {
     public String deleteRating(@PathVariable("id") Integer id, Model model) {
         // DONE: Find Rating by Id and delete the Rating, return to Rating list
         logger.info("/rating/delete/ {}", id);
-        Rating rating = ratingRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-        ratingRepository.delete(rating);
-        model.addAttribute("users", ratingRepository.findAll());
+        Rating rating = ratingService.findById(id);
+        ratingService.delete(rating);
+        model.addAttribute("users", ratingService.findAll());
         return "redirect:/rating/list";
     }
 }
