@@ -2,16 +2,14 @@ package com.poseidon.controllers;
 
 import com.poseidon.domain.User;
 import com.poseidon.repositories.UserRepository;
+import com.poseidon.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -21,14 +19,17 @@ public class UserController {
 
     private static final Logger logger = LogManager.getLogger(UserController.class);
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @RequestMapping("/user/list")
     public String home(Model model)
     {
         logger.info("/user/list");
-        model.addAttribute("users", userRepository.findAll());
+        model.addAttribute("users", userService.findAll());
         return "user/list";
     }
 
@@ -39,23 +40,23 @@ public class UserController {
     }
 
     @PostMapping("/user/validate")
-    public String validate(@Valid User user, BindingResult result, Model model) {
+    public String validate(@Valid User user, @ModelAttribute("user") BindingResult result, Model model) {
         logger.info("/user/validate");
-        if (!result.hasErrors()) {
+        if (result.hasErrors()) {
             logger.error("/user/validate");
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            user.setPassword(encoder.encode(user.getPassword()));
-            userRepository.save(user);
-            model.addAttribute("users", userRepository.findAll());
-            return "redirect:/user/list";
+            model.addAttribute("users", user);
+            return "user/add";
         }
-        return "user/add";
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        user.setPassword(encoder.encode(user.getPassword()));
+        userService.save(user);
+        return "redirect:/user/list";
     }
 
     @GetMapping("/user/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         logger.info("/user/update/ {}", id);
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+        User user = userService.findById(id);
         user.setPassword("");
         model.addAttribute("user", user);
         return "user/update";
@@ -73,17 +74,16 @@ public class UserController {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         user.setPassword(encoder.encode(user.getPassword()));
         user.setId(id);
-        userRepository.save(user);
-        model.addAttribute("users", userRepository.findAll());
+        userService.save(user);
+        model.addAttribute("users", userService.findAll());
         return "redirect:/user/list";
     }
 
     @GetMapping("/user/delete/{id}")
     public String deleteUser(@PathVariable("id") Integer id, Model model) {
         logger.info("/user/delete/ {}", id);
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-        userRepository.delete(user);
-        model.addAttribute("users", userRepository.findAll());
+        userService.delete(id);
+        model.addAttribute("users", userService.findAll());
         return "redirect:/user/list";
     }
 }

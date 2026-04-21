@@ -1,17 +1,12 @@
 package com.poseidon.controllers;
 
 import com.poseidon.domain.Rating;
-import com.poseidon.repositories.RatingRepository;
 import com.poseidon.services.RatingService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -43,16 +38,18 @@ public class RatingController {
     }
 
     @PostMapping("/rating/validate")
-    public String validate(@Valid Rating rating, BindingResult result, Model model) {
+    public String validate(@Valid Rating rating, @ModelAttribute(name="rating")
+    BindingResult result, Model model) {
         // DONE: check data valid and save to db, after saving return Rating list
         logger.info("/rating/validate");
         if (result.hasErrors()) {
             logger.error("/rating/validate");
-            ratingService.save(rating);
-            model.addAttribute("rating", ratingService.findAll());
-            return "redirect:rating/list";
+            model.addAttribute("rating", rating);
+            return "rating/add";
         }
-        return "rating/add";
+        ratingService.save(rating);
+        return "redirect:rating/list";
+
     }
 
     @GetMapping("/rating/update/{id}")
@@ -83,8 +80,7 @@ public class RatingController {
     public String deleteRating(@PathVariable("id") Integer id, Model model) {
         // DONE: Find Rating by Id and delete the Rating, return to Rating list
         logger.info("/rating/delete/ {}", id);
-        Rating rating = ratingService.findById(id);
-        ratingService.delete(rating);
+        ratingService.delete(id);
         model.addAttribute("users", ratingService.findAll());
         return "redirect:/rating/list";
     }

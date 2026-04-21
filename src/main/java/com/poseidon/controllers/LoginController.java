@@ -1,6 +1,7 @@
 package com.poseidon.controllers;
 
 import com.poseidon.repositories.UserRepository;
+import com.poseidon.services.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,8 +15,12 @@ import org.apache.logging.log4j.Logger;
 public class LoginController {
 
     private static final Logger logger = LogManager.getLogger(LoginController.class);
-    @Autowired
-    private UserRepository userRepository;
+
+    private final UserService userService;
+
+    public LoginController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("login")
     public ModelAndView login() {
@@ -29,7 +34,7 @@ public class LoginController {
     public ModelAndView getAllUserArticles() {
         System.out.println("secure/article-details");
         ModelAndView mav = new ModelAndView();
-        mav.addObject("users", userRepository.findAll());
+        mav.addObject("users", userService.findAll());
         mav.setViewName("user/list");
         return mav;
     }

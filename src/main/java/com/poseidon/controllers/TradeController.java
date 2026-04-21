@@ -2,15 +2,13 @@ package com.poseidon.controllers;
 
 import com.poseidon.domain.Trade;
 import com.poseidon.repositories.TradeRepository;
+import com.poseidon.services.TradeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -22,15 +20,18 @@ public class TradeController {
 
     private static final Logger logger = LogManager.getLogger(TradeController.class);
 
-    @Autowired
-    private TradeRepository tradeRepository;
+    private final TradeService tradeService;
+
+    public TradeController(TradeService tradeService) {
+        this.tradeService = tradeService;
+    }
 
     @RequestMapping("/trade/list")
     public String home(Model model)
     {
         // DONE: find all Trade, add to model
         logger.info("/trade/list");
-        model.addAttribute("trade", tradeRepository.findAll());
+        model.addAttribute("trade", tradeService.findAll());
         return "trade/list";
     }
 
@@ -41,23 +42,23 @@ public class TradeController {
     }
 
     @PostMapping("/trade/validate")
-    public String validate(@Valid Trade trade, BindingResult result, Model model) {
+    public String validate(@Valid Trade trade, @ModelAttribute("trade") BindingResult result, Model model) {
         // DONE: check data valid and save to db, after saving return Trade list
         logger.info("/trade/validate");
-        if (!result.hasErrors()) {
+        if (result.hasErrors()) {
             logger.error("/trade/validate");
-            tradeRepository.save(trade);
-            model.addAttribute("trade", tradeRepository.findAll());
-            return "redirect:/trade/list";
+            model.addAttribute("trade", trade);
+            return "trade/add";
         }
-        return "trade/add";
+        tradeService.save(trade);
+        return "redirect:/trade/list";
     }
 
     @GetMapping("/trade/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         // DONE: get Trade by Id and to model then show to the form
         logger.error("/trade/update/{}", id);
-        Trade trade = tradeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid id:" + id));
+        Trade trade = tradeService.findById(id);
         model.addAttribute("trade", trade);
         return "trade/update";
     }
@@ -72,8 +73,8 @@ public class TradeController {
             return "/trade/update";
         }
         trade.setTradeId(id);
-        tradeRepository.save(trade);
-        model.addAttribute("trade", tradeRepository.findAll());
+        tradeService.save(trade);
+        model.addAttribute("trade", tradeService.findAll());
         return "redirect:/trade/list";
     }
 
@@ -81,9 +82,8 @@ public class TradeController {
     public String deleteTrade(@PathVariable("id") Integer id, Model model) {
         // DONE: Find Trade by Id and delete the Trade, return to Trade list
         logger.info("/trade/delete/{}", id);
-        Trade trade = tradeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-        tradeRepository.delete(trade);
-        model.addAttribute("users", tradeRepository.findAll());
+        tradeService.delete(id);
+        model.addAttribute("users", tradeService.findAll());
         return "redirect:/trade/list";
     }
 }

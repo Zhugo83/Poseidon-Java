@@ -2,6 +2,7 @@ package com.poseidon.controllers;
 
 import com.poseidon.domain.RuleName;
 import com.poseidon.repositories.RuleNameRepository;
+import com.poseidon.services.RuleNameService;
 import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,12 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+
+import javax.naming.Binding;
 
 @Controller
 public class RuleNameController {
@@ -23,15 +23,18 @@ public class RuleNameController {
 
     private static final Logger logger = LogManager.getLogger(RuleNameController.class);
 
-    @Autowired
-    private RuleNameRepository ruleNameRepository;
+    private final RuleNameService ruleNameService;
+
+    public RuleNameController(RuleNameService ruleNameService) {
+        this.ruleNameService = ruleNameService;
+    }
 
     @RequestMapping("/ruleName/list")
     public String home(Model model)
     {
         // DONE: find all RuleName, add to model
         logger.info("/ruleName/list");
-        model.addAttribute("ruleName", ruleNameRepository.findAll());
+        model.addAttribute("ruleName", ruleNameService.findAll());
         return "ruleName/list";
     }
 
@@ -42,24 +45,23 @@ public class RuleNameController {
     }
 
     @PostMapping("/ruleName/validate")
-    public String validate(@Valid RuleName ruleName, BindingResult result, Model model) {
+    public String validate(@Valid RuleName ruleName, @ModelAttribute("rule") BindingResult result, Model model) {
         // DONE: check data valid and save to db, after saving return RuleName list
         logger.info("/ruleName/validate");
         if (result.hasErrors()) {
             logger.error("/ruleName/validate");
-            ruleNameRepository.save(ruleName);
-            model.addAttribute("ruleName", ruleNameRepository.findAll());
-            return "redirect:ruleName/list";
+            model.addAttribute("ruleName", ruleNameService.findAll());
+            return "ruleName/add";
         }
-        return "ruleName/add";
+        ruleNameService.save(ruleName);
+        return "redirect:ruleName/list";
     }
 
     @GetMapping("/ruleName/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         // DONE: get RuleName by Id and to model then show to the form
         logger.info("/ruleName/update/ {}", id);
-        RuleName ruleName = ruleNameRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid id:" + id));
-        model.addAttribute("ruleName", ruleName);
+        model.addAttribute("ruleName", ruleNameService.findById(id));
         return "ruleName/update";
     }
 
@@ -73,7 +75,7 @@ public class RuleNameController {
             return "ruleName/update";
         }
         ruleName.setId(id);
-        ruleNameRepository.save(ruleName);
+        ruleNameService.save(ruleName);
         model.addAttribute("ruleName", ruleName);
         return "redirect:/ruleName/list";
     }
@@ -82,9 +84,8 @@ public class RuleNameController {
     public String deleteRuleName(@PathVariable("id") Integer id, Model model) {
         // DONE: Find RuleName by Id and delete the RuleName, return to Rule list
         logger.info("/ruleName/delete/ {}", id);
-        RuleName ruleName = ruleNameRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-        ruleNameRepository.delete(ruleName);
-        model.addAttribute("users", ruleNameRepository.findAll());
+        ruleNameService.delete(id);
+        model.addAttribute("users", ruleNameService.findAll());
         return "redirect:/ruleName/list";
     }
 }
