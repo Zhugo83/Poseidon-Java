@@ -44,10 +44,10 @@ public class RatingController {
         logger.info("/rating/validate");
         if (result.hasErrors()) {
             logger.error("/rating/validate");
-            model.addAttribute("rating", rating);
             return "rating/add";
         }
         ratingService.save(rating);
+        model.addAttribute("ratings", ratingService.findAll());
         return "redirect:rating/list";
 
     }
@@ -72,7 +72,7 @@ public class RatingController {
         }
         rating.setId(id);
         ratingService.save(rating);
-        model.addAttribute("rating", rating);
+        model.addAttribute("ratings", rating);
         return "redirect:/rating/list";
     }
 
@@ -81,7 +81,7 @@ public class RatingController {
         // DONE: Find Rating by Id and delete the Rating, return to Rating list
         logger.info("/rating/delete/ {}", id);
         ratingService.delete(id);
-        model.addAttribute("users", ratingService.findAll());
+        model.addAttribute("ratings", ratingService.findAll());
         return "redirect:/rating/list";
     }
 }

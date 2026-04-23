@@ -29,7 +29,7 @@ public class CurveController {
     {
         // DONE: find all Curve Point, add to model
         logger.info("/curvePoint/list");
-        model.addAttribute("curvePoint", curvePointService.findAll());
+        model.addAttribute("curvePoints", curvePointService.findAll());
         return "curvePoint/list";
     }
 
@@ -44,7 +44,7 @@ public class CurveController {
         // DONE: check data valid and save to db, after saving return Curve list
         logger.info("/curvePoint/validate");
         if (result.hasErrors()) {
-            model.addAttribute("curvePoint", curvePoint);
+            model.addAttribute("curvePoints", curvePoint);
             return "curvePoint/add";
         }
         curvePointService.save(curvePoint);
@@ -69,7 +69,7 @@ public class CurveController {
         }
         curvePoint.setId(id);
         curvePointService.save(curvePoint);
-        model.addAttribute("curvePoint", curvePoint);
+        model.addAttribute("curvePoints", curvePointService.findAll());
         return "redirect:/curvePoint/list";
 
     }
@@ -79,7 +79,7 @@ public class CurveController {
         // DONE: Find Curve by Id and delete the Curve, return to Curve list
         logger.error("/curvePoint/delete/{}", id);
         curvePointService.delete(id);
-        model.addAttribute("users", curvePointService.findAll());
+        model.addAttribute("curvePoints", curvePointService.findAll());
         return "redirect:/curvePoint/list";
     }
 }

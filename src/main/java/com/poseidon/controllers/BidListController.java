@@ -26,7 +26,7 @@ public class BidListController {
     public String home(Model model)
     {
         logger.info("/bidList/list");
-        model.addAttribute("bidList", bidListService.findAll());
+        model.addAttribute("bidLists", bidListService.findAll());
         return "bidList/list";
     }
 
@@ -34,22 +34,21 @@ public class BidListController {
     public String addBidForm(@PathVariable Integer id, Model model, BidList bid) {
         logger.info("/bidList/add");
         bidListService.findById(id);
-        model.addAttribute("bid", bid);
+        model.addAttribute("bidList", bid);
         return "bidList/add";
     }
 
     @PostMapping("/bidList/validate")
     public String validate(@Valid BidList bid,
-                           @ModelAttribute(name="bid")
                            BindingResult result,
                            Model model) {
         // DONE: check data valid and save to db, after saving return bid list
         logger.info("/bidList/validate");
         if (result.hasErrors()) {;
-            model.addAttribute("bidList", bid);
             return "bidList/add";
         }
         bidListService.save(bid);
+        model.addAttribute("bidLists", bidListService.findAll());
         return "redirect: /bidList/list";
     }
 
@@ -80,7 +79,7 @@ public class BidListController {
         // DONE: Find Bid by Id and delete the bid, return to Bid list
         logger.info("/bidList/delete/{}", id);
         bidListService.delete(id);
-        model.addAttribute("users", bidListService.findAll());
+        model.addAttribute("bidLists", bidListService.findAll());
         return "redirect:/bidList/list";
     }
 }

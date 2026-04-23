@@ -31,7 +31,7 @@ public class TradeController {
     {
         // DONE: find all Trade, add to model
         logger.info("/trade/list");
-        model.addAttribute("trade", tradeService.findAll());
+        model.addAttribute("trades", tradeService.findAll());
         return "trade/list";
     }
 
@@ -42,12 +42,12 @@ public class TradeController {
     }
 
     @PostMapping("/trade/validate")
-    public String validate(@Valid Trade trade, @ModelAttribute("trade") BindingResult result, Model model) {
+    public String validate(@Valid Trade trade, BindingResult result, Model model) {
         // DONE: check data valid and save to db, after saving return Trade list
         logger.info("/trade/validate");
         if (result.hasErrors()) {
             logger.error("/trade/validate");
-            model.addAttribute("trade", trade);
+            model.addAttribute("trades", tradeService.findAll());
             return "trade/add";
         }
         tradeService.save(trade);
@@ -74,7 +74,7 @@ public class TradeController {
         }
         trade.setTradeId(id);
         tradeService.save(trade);
-        model.addAttribute("trade", tradeService.findAll());
+        model.addAttribute("trades", tradeService.findAll());
         return "redirect:/trade/list";
     }
 
@@ -83,7 +83,7 @@ public class TradeController {
         // DONE: Find Trade by Id and delete the Trade, return to Trade list
         logger.info("/trade/delete/{}", id);
         tradeService.delete(id);
-        model.addAttribute("users", tradeService.findAll());
+        model.addAttribute("trades", tradeService.findAll());
         return "redirect:/trade/list";
     }
 }

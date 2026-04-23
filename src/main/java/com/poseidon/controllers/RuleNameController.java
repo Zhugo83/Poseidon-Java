@@ -34,7 +34,7 @@ public class RuleNameController {
     {
         // DONE: find all RuleName, add to model
         logger.info("/ruleName/list");
-        model.addAttribute("ruleName", ruleNameService.findAll());
+        model.addAttribute("ruleNames", ruleNameService.findAll());
         return "ruleName/list";
     }
 
@@ -50,10 +50,10 @@ public class RuleNameController {
         logger.info("/ruleName/validate");
         if (result.hasErrors()) {
             logger.error("/ruleName/validate");
-            model.addAttribute("ruleName", ruleNameService.findAll());
             return "ruleName/add";
         }
         ruleNameService.save(ruleName);
+        model.addAttribute("ruleNames", ruleNameService.findAll());
         return "redirect:ruleName/list";
     }
 
@@ -85,7 +85,7 @@ public class RuleNameController {
         // DONE: Find RuleName by Id and delete the RuleName, return to Rule list
         logger.info("/ruleName/delete/ {}", id);
         ruleNameService.delete(id);
-        model.addAttribute("users", ruleNameService.findAll());
+        model.addAttribute("ruleNames", ruleNameService.findAll());
         return "redirect:/ruleName/list";
     }
 }
