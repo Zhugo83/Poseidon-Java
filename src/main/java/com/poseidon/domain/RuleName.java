@@ -20,14 +20,4 @@ public class RuleName {
     String template;
     String sqlStr;
     String sqlPart;
-
-    public RuleName(String name, String description, String json, String template, String sql, String sqlPart) {
-         this.name = name;
-         this.description = description;
-         this.json = json;
-         this.template = template;
-         this.sqlStr = sql;
-         this.sqlPart = sqlPart;
-    }
-
 }

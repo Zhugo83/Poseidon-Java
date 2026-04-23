@@ -70,7 +70,7 @@ public class TradeController {
         logger.info("/trade/update/{}", id);
         if (result.hasErrors()) {
             logger.error("/trade/update/{}", id);
-            return "/trade/update";
+            return "trade/update";
         }
         trade.setTradeId(id);
         tradeService.save(trade);

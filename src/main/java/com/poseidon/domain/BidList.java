@@ -40,11 +40,4 @@ public class BidList {
     String dealType;
     String sourceListId;
     String side;
-
-    public BidList(String account, String type, double bindQuantity) {
-        this.account = account;
-        this.type = type;
-        this.bidQuantity = bindQuantity;
-    }
-
 }

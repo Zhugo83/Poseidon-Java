@@ -38,6 +38,7 @@
 				<td style="width: 10%" th:text="${curve.id}"></td>
 				<td th:text="${curve.curveId}"></td>
 				<td style="width: 25%" th:text="${curve.term}"></td>
+				<td style="width: 25%" th:text="${curve.value}"></td>
 				<td style="width: 15%" class="value">
 					<a th:href="@{/curvePoint/update/{id}(id=${curve.id})}">Edit</a>&nbsp;|&nbsp;
 					<a th:href="@{/curvePoint/delete/{id}(id=${curve.id})}">Delete</a>

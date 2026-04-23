@@ -22,10 +22,4 @@ public class CurvePoint {
     Double value;
     Timestamp creationDate;
 
-    public CurvePoint(int id, double term, double value) {
-        this.id = id;
-        this.term = term;
-        this.value = value;
-    }
-
 }

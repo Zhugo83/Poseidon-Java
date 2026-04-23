@@ -18,12 +18,4 @@ public class Rating {
     String sandPRating;
     String fitchRating;
     Integer orderNumber;
-
-    public Rating(String moodysRating, String sandPRating, String fitchRating, int orderNumber) {
-        this.moodysRating = moodysRating;
-        this.sandPRating = sandPRating;
-        this.fitchRating = fitchRating;
-        this.orderNumber = orderNumber;
-    }
-
 }

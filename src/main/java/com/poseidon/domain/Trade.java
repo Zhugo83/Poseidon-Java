@@ -42,9 +42,4 @@ public class Trade {
     String sourceListId;
     String side;
 
-    public Trade(String account, String type) {
-        this.account = account;
-        this.type = type;
-    }
-
 }
