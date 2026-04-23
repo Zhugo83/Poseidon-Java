@@ -1,10 +1,14 @@
 package com.poseidon.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 
 
+@Setter
+@Getter
 @Entity
 @Table(name = "curvepoint")
 public class CurvePoint {
@@ -13,10 +17,10 @@ public class CurvePoint {
     @GeneratedValue(strategy= GenerationType.AUTO)
     Integer id;
     Integer curveId;
-    LocalDate asOfDate;
+    Timestamp asOfDate;
     Double term;
     Double value;
-    LocalDate creationDate;
+    Timestamp creationDate;
 
     public CurvePoint(int id, double term, double value) {
         this.id = id;
@@ -24,51 +28,4 @@ public class CurvePoint {
         this.value = value;
     }
 
-    public LocalDate getAsOfDate() {
-        return asOfDate;
-    }
-
-    public void setAsOfDate(LocalDate asOfDate) {
-        this.asOfDate = asOfDate;
-    }
-
-    public Integer getCurveId() {
-        return curveId;
-    }
-
-    public void setCurveId(Integer curveId) {
-        this.curveId = curveId;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Double getTerm() {
-        return term;
-    }
-
-    public void setTerm(Double term) {
-        this.term = term;
-    }
-
-    public Double getValue() {
-        return value;
-    }
-
-    public void setValue(Double value) {
-        this.value = value;
-    }
-
-    public LocalDate getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(LocalDate creationDate) {
-        this.creationDate = creationDate;
-    }
 }
