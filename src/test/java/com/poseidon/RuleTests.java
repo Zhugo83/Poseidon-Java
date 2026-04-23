@@ -20,7 +20,13 @@ public class RuleTests {
 
 	@Test
 	public void ruleTest() {
-		RuleName rule = new RuleName("Rule Name", "Description", "Json", "Template", "SQL", "SQL Part");
+		RuleName rule = new RuleName();
+		rule.setName("Rule Name");
+		rule.setDescription("Rule Description");
+		rule.setJson("Rule JSON");
+		rule.setTemplate("Rule Template");
+		rule.setSqlStr("Rule SQL");
+		rule.setSqlPart("Rule SQL Part");
 
 		// Save
 		rule = ruleNameRepository.save(rule);
