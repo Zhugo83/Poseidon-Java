@@ -31,10 +31,8 @@ public class BidListController {
     }
 
     @GetMapping("/bidList/add")
-    public String addBidForm(@PathVariable Integer id, Model model, BidList bid) {
+    public String addBidForm(BidList bid) {
         logger.info("/bidList/add");
-        bidListService.findById(id);
-        model.addAttribute("bidList", bid);
         return "bidList/add";
     }
 
